@@ -1,0 +1,252 @@
+{
+  "info": {
+    "_postman_id": "a65e0809-950e-40cb-a6c1-e85a49807835",
+    "name": "todo projrct",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52713125",
+    "_collection_link": "https://go.postman.co/collection/52713125-a65e0809-950e-40cb-a6c1-e85a49807835?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "rejester",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"First name should be correct\", function () {\r",
+              "    const responseData = pm.response.json();\r",
+              "    pm.expect(responseData.firstName).to.exist.and.to.be.a('string').that.is.not.empty;\r",
+              "});\r",
+              "const responseData = pm.response.json();\r",
+              "const token = responseData.access_token;\r",
+              "pm.environment.set(\"token\", token);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const firstnamr=pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+              "\r",
+              "pm.environment.set(\"firstnamr\", firstnamr);\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"Aa078105\",\r\n    \"firstName\": \"{{firstnamr}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BuaseURL}}/api/v1/users/register",
+          "host": [
+            "{{BuaseURL}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "add todo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"add todo Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "pm.test(\"add todo name shode be correct\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    const taskid=jsonData._id\r",
+              "\r",
+              "    pm.environment.set(\"taskid\", taskid);\r",
+              "    pm.expect(jsonData.item).to.eql(\"postman\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"item\": \"postman\",\r\n    \"isCompleted\": false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BuaseURL}}/api/v1/tasks",
+          "host": [
+            "{{BuaseURL}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "mark todo as completed",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Mark todo Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"isCompleted should be true\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.isCompleted).to.eql(true);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"item\": \"postman\",\r\n    \"isCompleted\":true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BuaseURL}}/api/v1/tasks/{{taskid}}",
+          "host": [
+            "{{BuaseURL}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks",
+            "{{taskid}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete todo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Delete todo Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{BuaseURL}}/api/v1/tasks/{{taskid}}",
+          "host": [
+            "{{BuaseURL}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks",
+            "{{taskid}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "seed",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}
